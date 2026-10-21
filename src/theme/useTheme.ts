@@ -1,19 +1,41 @@
 import { useCallback, useEffect, useState } from 'react'
+import { db } from '../db/db'
+import { repo } from '../db/repo'
+import type { ThemePref } from '../domain'
 
-export type ThemePref = 'system' | 'light' | 'dark'
+export type { ThemePref } from '../domain'
 export type Theme = 'light' | 'dark'
 
-// Fase 0: preferensi disimpan di localStorage. Fase 1 memindahkannya ke tabel Pengaturan.
-const KEY = 'lunas-theme'
+// Sumber utama preferensi tema adalah tabel Pengaturan (IndexedDB). localStorage hanya salinan
+// supaya tema benar sejak tampilan pertama, sebelum IndexedDB selesai dibaca.
+const CACHE_KEY = 'lunas-theme'
 const query = () => window.matchMedia('(prefers-color-scheme: dark)')
 
-function readPref(): ThemePref {
+function readCache(): ThemePref {
   try {
-    const v = localStorage.getItem(KEY)
+    const v = localStorage.getItem(CACHE_KEY)
     return v === 'light' || v === 'dark' ? v : 'system'
   } catch {
     return 'system'
   }
+}
+
+function writeCache(pref: ThemePref) {
+  try {
+    if (pref === 'system') localStorage.removeItem(CACHE_KEY)
+    else localStorage.setItem(CACHE_KEY, pref)
+  } catch {
+    // Penyimpanan diblokir: tema tetap berlaku untuk sesi ini.
+  }
+}
+
+/** Membaca preferensi dari Pengaturan; nilai lama dari Fase 0 (hanya di localStorage) dipindahkan sekali. */
+async function loadPref(): Promise<ThemePref> {
+  const stored = await db.settings.get('themePref')
+  if (stored) return stored.value as ThemePref
+  const cached = readCache()
+  if (cached !== 'system') await repo.updateSettings({ themePref: cached })
+  return cached
 }
 
 function resolve(pref: ThemePref): Theme {
@@ -22,8 +44,24 @@ function resolve(pref: ThemePref): Theme {
 }
 
 export function useTheme() {
-  const [pref, setPrefState] = useState<ThemePref>(readPref)
-  const [theme, setTheme] = useState<Theme>(() => resolve(readPref()))
+  const [pref, setPrefState] = useState<ThemePref>(readCache)
+  const [theme, setTheme] = useState<Theme>(() => resolve(readCache()))
+
+  useEffect(() => {
+    let active = true
+    loadPref()
+      .then((stored) => {
+        if (!active) return
+        writeCache(stored)
+        setPrefState(stored)
+      })
+      .catch(() => {
+        // IndexedDB tidak tersedia: pakai salinan localStorage.
+      })
+    return () => {
+      active = false
+    }
+  }, [])
 
   useEffect(() => {
     const apply = () => {
@@ -41,13 +79,11 @@ export function useTheme() {
   }, [pref])
 
   const setPref = useCallback((next: ThemePref) => {
-    try {
-      if (next === 'system') localStorage.removeItem(KEY)
-      else localStorage.setItem(KEY, next)
-    } catch {
-      // Penyimpanan diblokir: tema tetap berlaku untuk sesi ini.
-    }
+    writeCache(next)
     setPrefState(next)
+    repo.updateSettings({ themePref: next }).catch(() => {
+      // Gagal menyimpan ke IndexedDB: tema tetap berlaku lewat salinan localStorage.
+    })
   }, [])
 
   const toggle = useCallback(() => setPref(theme === 'dark' ? 'light' : 'dark'), [theme, setPref])

@@ -1,6 +1,7 @@
 import { AlertIcon, CheckCircleIcon } from './icons'
+import type { OjkStatus } from '../domain'
 
-export type OjkStatus = 'registered' | 'unregistered'
+export type { OjkStatus }
 
 const LABEL: Record<OjkStatus, string> = {
   registered: 'Terdaftar OJK',
