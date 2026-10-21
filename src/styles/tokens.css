@@ -1,0 +1,84 @@
+/*
+ * Token desain Lunas. Sumber nilai: PRD bagian "Desain dan design system".
+ * Tema dipasang lewat atribut data-theme di elemen mana pun, jadi satu halaman
+ * bisa menampilkan bingkai terang dan gelap berdampingan.
+ */
+:root,
+[data-theme='light'] {
+  color-scheme: light;
+  --bg: #ffffff;
+  --bg-fill: #ffffff;
+  --card: #f4f8fb;
+  --card-border: #e1ebf2;
+  --text: #14202e;
+  --text-muted: #5c6b7a;
+  --primary: #3368a0;
+  --on-primary: #ffffff;
+  --accent: #66a3bf;
+  --on-accent: #0f2233;
+  --link: #3368a0;
+  --bar: #3368a0;
+  --track: #e1ebf2;
+  --nav-bg: #ffffff;
+  --nav-border: #e1ebf2;
+  --nav-active-bg: #dceaf3;
+  --nav-active-text: #3368a0;
+  --nav-plus-bg: #3368a0;
+  --nav-plus-text: #ffffff;
+  --ok: #2f7d6e;
+  --warn: #b0510b;
+  --loan-a: #3368a0;
+  --loan-b: #66a3bf;
+  --loan-c: #1f4470;
+  --loan-d: #9cc9d9;
+  --loan-e: #7fb8b0;
+  /* Warna huruf di atas warna pinjaman, dipilih dari rasio kontras tertinggi. */
+  --on-loan-a: #ffffff;
+  --on-loan-b: #0f2233;
+  --on-loan-c: #ffffff;
+  --on-loan-d: #0f2233;
+  --on-loan-e: #0f2233;
+  --shadow: 0 8px 24px rgb(20 32 46 / 0.08);
+}
+
+[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #0f1c2b;
+  --bg-fill: linear-gradient(180deg, #0f1c2b 0%, #0a1420 100%);
+  --card: #172636;
+  --card-border: #243649;
+  --text: #f1f5f9;
+  --text-muted: #9fb2c3;
+  --primary: #66a3bf;
+  --on-primary: #0f2233;
+  --accent: #66a3bf;
+  --on-accent: #0f2233;
+  --link: #8fc4de;
+  --bar: #66a3bf;
+  --track: #243649;
+  --nav-bg: #172636;
+  --nav-border: #243649;
+  --nav-active-bg: #66a3bf;
+  --nav-active-text: #0f2233;
+  --nav-plus-bg: #f1f5f9;
+  --nav-plus-text: #0f2233;
+  --ok: #7fd1bc;
+  --warn: #f0b27a;
+  --loan-a: #4a86c5;
+  --loan-b: #8fc4de;
+  --loan-c: #2f5f96;
+  --loan-d: #b9dcea;
+  --loan-e: #6fbfb2;
+  --on-loan-a: #0f2233;
+  --on-loan-b: #0f2233;
+  --on-loan-c: #ffffff;
+  --on-loan-d: #0f2233;
+  --on-loan-e: #0f2233;
+  --shadow: 0 8px 24px rgb(0 0 0 / 0.35);
+}
+
+/* Latar halaman ikut tema di mana pun data-theme dipasang. */
+[data-theme] {
+  background: var(--bg-fill);
+  color: var(--text);
+}

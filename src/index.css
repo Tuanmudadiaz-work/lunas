@@ -1,0 +1,68 @@
+@import './styles/fonts.css';
+@import 'tailwindcss';
+@import './styles/tokens.css';
+
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-card: var(--card);
+  --color-card-border: var(--card-border);
+  --color-text: var(--text);
+  --color-muted: var(--text-muted);
+  --color-primary: var(--primary);
+  --color-on-primary: var(--on-primary);
+  --color-accent: var(--accent);
+  --color-on-accent: var(--on-accent);
+  --color-link: var(--link);
+  --color-bar: var(--bar);
+  --color-track: var(--track);
+  --color-nav: var(--nav-bg);
+  --color-nav-border: var(--nav-border);
+  --color-nav-active: var(--nav-active-bg);
+  --color-on-nav-active: var(--nav-active-text);
+  --color-nav-plus: var(--nav-plus-bg);
+  --color-on-nav-plus: var(--nav-plus-text);
+  --color-ok: var(--ok);
+  --color-warn: var(--warn);
+
+  --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Inter Variable', Inter,
+    system-ui, sans-serif;
+
+  --radius-card: 24px;
+  --radius-box: 20px;
+  --spacing-page: 20px;
+  --spacing-block: 16px;
+  --spacing-touch: 44px;
+  --shadow-soft: var(--shadow);
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background: var(--bg-fill);
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+:focus-visible {
+  outline: 2px solid var(--link);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
