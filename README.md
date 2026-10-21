@@ -15,6 +15,25 @@ npm run lint
 
 ## Status
 
+### Fase 2 (layar inti tanpa AI) selesai
+
+- **Onboarding** (`src/screens/Onboarding.tsx`): sambutan, lalu kode lisensi 16 karakter (`XXXX-XXXX-XXXX-XXXX`).
+  Untuk sementara kode hanya dicek formatnya di HP (`normalizeLicenseCode`); aktivasi ke server dan ikatan satu perangkat di Fase 3.
+- **Beranda**: grafik setengah lingkaran sisa pokok per pinjaman, persentase terbayar, denda terpisah, kartu Prioritas hari ini
+  (ke Rencana bayar), dua jatuh tempo terdekat, check-in perasaan (tersimpan per hari), tombol tema. Belum ada saran AI.
+- **Utang**: filter Semua / Terdaftar / Belum terdaftar, baris per pinjaman dengan sisa pokok, jatuh tempo, bar dan persentase lunas,
+  label Hampir lunas mulai 80%, denda ditulis terpisah. Ketuk baris untuk rincian, riwayat pembayaran, ubah, dan hapus.
+- **Kalender**: navigasi bulan (Senin di kolom pertama), titik di tanggal jatuh tempo dari aturan pengulangan, rincian dan total
+  yang harus disiapkan per tanggal, tombol Catat pembayaran, keadaan kosong dengan ilustrasi.
+- **Rencana bayar** (dari Beranda dan Utang, tanpa tab sendiri): pemasukan dan kebutuhan dasar diisi pengguna, urutan dan alokasi
+  dari `buildPaymentPlan`, kekurangan atau sisa dana, pinjaman belum terdaftar OJK ditandai 'Cek bantuan dulu'.
+- **Tambah data** (tombol +): lembar dari bawah untuk tambah pinjaman dan catat pembayaran (pokok atau denda, dengan pratinjau sisa).
+  Isian bebas lewat AI menyusul di Fase 4.
+- **Tenang**: masih layar sementara; Teman Tenang, jalur krisis, dan layar bantuan dibuat di Fase 4.
+- Navigasi lewat hash (`#/utang`, `#/rencana`), jadi tombol kembali di HP berjalan. Halaman komponen Fase 0 ada di `#/komponen`.
+- Diuji di browser: lima pinjaman dimasukkan lewat form, angka di Beranda, Utang, Kalender, dan Rencana cocok dengan hitungan manual,
+  termasuk setelah mencatat pembayaran pokok, pembayaran denda, mengubah data, dan menghapus.
+
 ### Fase 1 (lapisan data dan logika) selesai
 
 - **Skema IndexedDB** (Dexie, `src/db/db.ts`): tabel `loans`, `payments`, `settings`, `feelings`, `suggestions`, `memoryNotes`.

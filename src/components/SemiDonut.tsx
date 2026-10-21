@@ -53,13 +53,13 @@ export function SemiDonut({ segments, caption, total, ariaLabel }: SemiDonutProp
     <figure role="img" aria-label={ariaLabel} className="relative mx-auto w-full max-w-[280px]">
       <svg viewBox={`0 0 ${W} ${H}`} className="block w-full" aria-hidden>
         <path d={arc(Math.PI - capAngle, capAngle)} stroke="var(--track)" strokeWidth={STROKE} strokeLinecap="round" fill="none" />
-        {arcs.map(({ s, d, dot }) => {
+        {arcs.map(({ s, d, dot }, i) => {
           const { bg } = loanColor(s.colorIndex)
           return d ? (
-            <path key={s.label} d={d} stroke={bg} strokeWidth={STROKE} strokeLinecap="round" fill="none" />
+            <path key={i} d={d} stroke={bg} strokeWidth={STROKE} strokeLinecap="round" fill="none" />
           ) : (
             <circle
-              key={s.label}
+              key={i}
               cx={CX + R * Math.cos(dot!)}
               cy={CY - R * Math.sin(dot!)}
               r={STROKE / 2}
@@ -79,8 +79,8 @@ export function SemiDonut({ segments, caption, total, ariaLabel }: SemiDonutProp
 export function DonutLegend({ segments, format }: { segments: DonutSegment[]; format: (n: number) => string }) {
   return (
     <ul className="mt-3 space-y-1.5">
-      {segments.map((s) => (
-        <li key={s.label} className="flex items-center gap-2 text-[13px]">
+      {segments.map((s, i) => (
+        <li key={i} className="flex items-center gap-2 text-[13px]">
           <span className="size-2.5 shrink-0 rounded-full" style={{ background: loanColor(s.colorIndex).bg }} />
           <span className="truncate text-muted">{s.label}</span>
           <span className="ml-auto font-medium tabular-nums">{format(s.value)}</span>

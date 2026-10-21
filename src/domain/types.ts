@@ -91,6 +91,10 @@ export type Settings = {
   basicNeeds: number
   /** Mode hemat: tanpa blur dan animasi berat. */
   lowPowerMode: boolean
+  /** Kode lisensi yang dimasukkan saat onboarding, dalam bentuk 'XXXX-XXXX-XXXX-XXXX'. Kosong jika belum. */
+  licenseCode: string
+  /** Kapan onboarding selesai (ms). 0 berarti belum. */
+  onboardedAt: number
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -98,4 +102,6 @@ export const DEFAULT_SETTINGS: Settings = {
   monthlyIncome: 0,
   basicNeeds: 0,
   lowPowerMode: false,
+  licenseCode: '',
+  onboardedAt: 0,
 }

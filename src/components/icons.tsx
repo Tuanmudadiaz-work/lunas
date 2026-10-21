@@ -71,3 +71,30 @@ export const ChevronRightIcon = (p: P) => (
     <path d="m9.5 6 6 6-6 6" />
   </svg>
 )
+export const ChevronLeftIcon = (p: P) => (
+  <svg {...base(p)}>
+    <path d="m14.5 6-6 6 6 6" />
+  </svg>
+)
+export const FilePlusIcon = (p: P) => (
+  <svg {...base(p)}>
+    <rect x="5" y="3" width="14" height="18" rx="2.5" />
+    <path d="M12 8.5v6M9 11.5h6" />
+  </svg>
+)
+export const CheckCircleBigIcon = (p: P) => (
+  <svg {...base(p)}>
+    <circle cx="12" cy="12" r="9" />
+    <path d="m8 12 3 3 5-6" />
+  </svg>
+)
+export const TrendIcon = (p: P) => (
+  <svg {...base(p)}>
+    <path d="m4 18 6-6 4 4 6-8" />
+  </svg>
+)
+export const ShieldIcon = (p: P) => (
+  <svg {...base(p)}>
+    <path d="M12 3 19 6v5c0 5-3 8-7 10-4-2-7-5-7-10V6z" />
+  </svg>
+)

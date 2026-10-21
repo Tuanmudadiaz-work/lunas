@@ -66,3 +66,29 @@ body {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Lembar dari bawah (<dialog>). */
+dialog.sheet {
+  margin: auto auto 0;
+  padding: 0;
+  border: 0;
+  width: 100%;
+  max-width: 430px;
+  max-height: none;
+  background: transparent;
+  color: var(--text);
+}
+dialog.sheet::backdrop {
+  background: rgb(10 20 32 / 0.5);
+}
+@media (prefers-reduced-motion: no-preference) {
+  dialog.sheet[open] {
+    animation: sheet-up 180ms ease-out;
+  }
+}
+@keyframes sheet-up {
+  from {
+    transform: translateY(24px);
+    opacity: 0;
+  }
+}
