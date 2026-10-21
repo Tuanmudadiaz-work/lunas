@@ -22,3 +22,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Proxy Cloudflare
+proxy/node_modules
+proxy/.wrangler
+proxy/.dev.vars
+proxy/codes-*

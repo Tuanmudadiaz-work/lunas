@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Button, Card, TextField } from '../components'
 import { CheckCircleBigIcon, ShieldIcon, TrendIcon } from '../components/icons'
+import { proxy, ProxyError } from '../api'
 import { repo } from '../db/repo'
 import { normalizeLicenseCode } from '../domain'
 
@@ -11,23 +12,43 @@ const POINTS = [
 ]
 
 /**
- * Onboarding dua langkah. Kode lisensi saat ini hanya diperiksa formatnya di perangkat;
- * aktivasi ke server dan ikatan satu perangkat menyusul di Fase 3.
+ * Onboarding dua langkah. Kode lisensi diaktifkan ke proxy dan diikat ke kunci perangkat ini.
+ * Tanpa `VITE_PROXY_URL` (hanya saat pengembangan), kode cukup dicek formatnya di HP.
  */
 export function Onboarding() {
   const [step, setStep] = useState<'welcome' | 'license'>('welcome')
   const [code, setCode] = useState('')
   const [error, setError] = useState('')
+  const [canReset, setCanReset] = useState(false)
   const [saving, setSaving] = useState(false)
 
-  const activate = async () => {
+  const finish = (normalized: string) => repo.updateSettings({ licenseCode: normalized, onboardedAt: Date.now() })
+
+  const activate = async (withReset = false) => {
     const normalized = normalizeLicenseCode(code)
     if (!normalized) {
       setError('Kodenya belum pas. Cek lagi 16 huruf dan angkanya, ya.')
       return
     }
+    const client = proxy()
+    if (!client && !import.meta.env.DEV) {
+      setError('Server aktivasi belum diatur di versi aplikasi ini.')
+      return
+    }
     setSaving(true)
-    await repo.updateSettings({ licenseCode: normalized, onboardedAt: Date.now() })
+    setError('')
+    setCanReset(false)
+    try {
+      if (client) {
+        if (withReset) await client.resetDevice(normalized)
+        await client.activate(normalized)
+      }
+      await finish(normalized)
+    } catch (e) {
+      setError(e instanceof ProxyError ? e.message : 'Aktivasi gagal. Coba lagi sebentar lagi.')
+      setCanReset(e instanceof ProxyError && e.code === 'bound_elsewhere')
+      setSaving(false)
+    }
   }
 
   return (
@@ -87,8 +108,19 @@ export function Onboarding() {
               {error}
             </p>
           )}
+          {canReset && (
+            <div className="space-y-2 rounded-box border border-card-border bg-card px-4 py-3 text-[14px]">
+              <p>
+                Pindah ke HP baru? Lu bisa melepas HP lama sekali secara mandiri. Setelah itu, reset berikutnya lewat bukti
+                invoice Lynk.id.
+              </p>
+              <Button variant="ghost" block disabled={saving} onClick={() => void activate(true)}>
+                Lepas HP lama dan aktifkan di sini
+              </Button>
+            </div>
+          )}
           <Button type="submit" block disabled={saving}>
-            Aktifkan
+            {saving ? 'Mengaktifkan…' : 'Aktifkan'}
           </Button>
           <button type="button" onClick={() => setStep('welcome')} className="min-h-touch w-full text-[14px] font-semibold text-link">
             Kembali

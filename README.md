@@ -15,6 +15,26 @@ npm run lint
 
 ## Status
 
+### Fase 3 (proxy dan lisensi) selesai
+
+- **Proxy Cloudflare Worker** di [`proxy/`](proxy/README.md): endpoint ekstraksi, ringkasan, dan saran harian memakai
+  `claude-haiku-5-5` (keluaran JSON terstruktur); chat memakai `claude-sonnet-5-5` effort `medium` dengan streaming.
+  System prompt tetap dan di-cache, panjang keluaran dibatasi per tugas, tanpa model ketiga dan tanpa fallback.
+- **Lisensi**: kode 16 karakter dibuat duluan (`npm run codes` di `proxy/`) untuk diunggah ke Lynk.id. Server hanya
+  menyimpan HMAC kode dan hash kunci publik perangkat. Aktivasi memakai tantangan sekali pakai yang ditandatangani
+  kunci ECDSA P-256 perangkat (kunci privat tidak bisa diekspor, disimpan di IndexedDB). Satu kode satu HP; reset mandiri sekali.
+- **Setiap permintaan AI** membawa token berumur pendek dan tanda tangan perangkat atas isi permintaan. Kuota (paket
+  pesan Sonnet, panggilan Haiku per hari, saran sekali sehari) dan laju dihitung per lisensi di proxy. IP hanya sinyal
+  anomali: terlalu banyak jaringan berbeda dalam sejam membekukan AI sampai aktivasi ulang dari HP yang sama.
+- **Penyaring PII** (`src/domain/pii.ts`) membuang NIK, nomor HP, email, nomor rekening, dan pola alamat di HP dan sekali
+  lagi di proxy. **Snapshot anonim** (`src/domain/snapshot.ts`) mengganti nama platform dengan alias Pinjaman A, B, ...
+- **Log tanpa isi**: hanya rute, status, durasi, potongan hash lisensi, model, dan jumlah token.
+- **Aplikasi**: onboarding mengaktifkan kode ke proxy (`VITE_PROXY_URL`), dengan tombol lepas HP lama saat kode sudah
+  terikat. Klien proxy (`src/api/`) memperbarui token otomatis. 'Hapus semua data' tidak menghapus lisensi dan kunci perangkat.
+- **Tes**: 28 tes di `proxy/` (kuota habis hanya memblokir AI, tidak ada isi percakapan di log, tanda tangan palsu dan isi
+  yang diubah ditolak, klien HP sungguhan melawan proxy sungguhan) dan 106 tes di aplikasi. Diuji juga di runtime
+  Cloudflare lokal (`wrangler dev`) dengan aktivasi dari browser.
+
 ### Fase 2 (layar inti tanpa AI) selesai
 
 - **Onboarding** (`src/screens/Onboarding.tsx`): sambutan, lalu kode lisensi 16 karakter (`XXXX-XXXX-XXXX-XXXX`).

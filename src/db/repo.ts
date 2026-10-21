@@ -33,6 +33,9 @@ function assertValid(errors: string[]) {
 /** Catatan memori yang disimpan paling banyak sekian; yang terlama dibuang. */
 export const MAX_MEMORY_NOTES = 20
 
+/** Pengaturan yang ikut dipertahankan saat 'Hapus semua data'. */
+export const LICENSE_SETTING_KEYS = ['licenseCode', 'onboardedAt', 'licenseToken', 'licenseTokenExpiresAt'] as const
+
 export function makeRepo(db: LunasDB, now: () => number = Date.now) {
   return {
     // Pinjaman
@@ -137,10 +140,15 @@ export function makeRepo(db: LunasDB, now: () => number = Date.now) {
 
     // Semua data
 
-    /** Tombol 'Hapus semua data': mengosongkan semua tabel di perangkat. */
+    /**
+     * Tombol 'Hapus semua data': menghapus pinjaman, pembayaran, perasaan, saran, catatan, dan pengaturan.
+     * Lisensi dan kunci perangkat sengaja disimpan, supaya pengguna tidak perlu memakai jatah reset perangkat.
+     */
     async wipeAll(): Promise<void> {
       await db.transaction('rw', db.tables, async () => {
-        await Promise.all(db.tables.map((t) => t.clear()))
+        const keep = await db.settings.bulkGet([...LICENSE_SETTING_KEYS])
+        await Promise.all(db.tables.filter((t) => t.name !== 'device').map((t) => t.clear()))
+        await db.settings.bulkPut(keep.filter((r): r is SettingRow => r !== undefined))
       })
     },
   }

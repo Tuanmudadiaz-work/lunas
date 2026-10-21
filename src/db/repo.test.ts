@@ -112,13 +112,17 @@ describe('perasaan, saran, dan memori', () => {
 })
 
 describe('hapus semua data', () => {
-  it('mengosongkan semua tabel', async () => {
+  it('mengosongkan data pengguna, tapi lisensi dan kunci perangkat tetap', async () => {
     const loan = await repo.addLoan(loanInput)
     await repo.addPayment({ loanId: loan.id, amount: 1, date: '2026-10-21', allocation: 'principal' })
-    await repo.updateSettings({ themePref: 'dark' })
+    await repo.updateSettings({ themePref: 'dark', monthlyIncome: 4_000_000, licenseCode: 'ABCD-EFGH-JKMN-PQRS', onboardedAt: 5 })
     await repo.checkIn('biasa')
     await repo.addMemoryNote('x')
+    await repo.saveSuggestion([], '2026-10-21')
+    await db.device.add({ id: 'main', privateKey: {} as CryptoKey, publicKey: 'pk', createdAt: 1 })
     await repo.wipeAll()
-    for (const table of db.tables) expect(await table.count()).toBe(0)
+    for (const table of [db.loans, db.payments, db.feelings, db.suggestions, db.memoryNotes]) expect(await table.count()).toBe(0)
+    expect(await db.device.count()).toBe(1)
+    expect(await repo.getSettings()).toEqual({ ...DEFAULT_SETTINGS, licenseCode: 'ABCD-EFGH-JKMN-PQRS', onboardedAt: 5 })
   })
 })

@@ -1,0 +1,26 @@
+name = "lunas-proxy"
+main = "src/index.ts"
+compatibility_date = "2026-10-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Log Worker hanya berisi baris JSON dari proxy (tanpa isi percakapan).
+[observability]
+enabled = true
+
+[[kv_namespaces]]
+binding = "LUNAS_KV"
+# Isi setelah `npx wrangler kv namespace create LUNAS_KV`.
+id = "ISI_ID_KV_NAMESPACE"
+
+[vars]
+ALLOWED_ORIGINS = "http://localhost:5173,http://localhost:4173"
+SONNET_MESSAGES_TOTAL = "300"
+HAIKU_CALLS_PER_DAY = "40"
+RATE_PER_MINUTE = "12"
+TOKEN_TTL_HOURS = "168"
+
+# Rahasia (jangan ditulis di file ini), isi dengan:
+#   npx wrangler secret put ANTHROPIC_API_KEY
+#   npx wrangler secret put LICENSE_PEPPER
+#   npx wrangler secret put TOKEN_SECRET
+#   npx wrangler secret put ADMIN_TOKEN

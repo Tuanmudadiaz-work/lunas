@@ -95,6 +95,9 @@ export type Settings = {
   licenseCode: string
   /** Kapan onboarding selesai (ms). 0 berarti belum. */
   onboardedAt: number
+  /** Token akses proxy berumur pendek. Bukan rahasia jangka panjang: tanpa kunci perangkat, token ini tidak berguna. */
+  licenseToken: string
+  licenseTokenExpiresAt: number
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -104,4 +107,6 @@ export const DEFAULT_SETTINGS: Settings = {
   lowPowerMode: false,
   licenseCode: '',
   onboardedAt: 0,
+  licenseToken: '',
+  licenseTokenExpiresAt: 0,
 }
